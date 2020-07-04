@@ -10,7 +10,6 @@ def counting_sort(a, b, k):
     ## i in a
 
     for i in range(len(a)-1, -1, -1):
-        print(i, a[i], c[a[i]])
         b[c[a[i]]-1] = a[i]
         c[a[i]] -= 1
 
