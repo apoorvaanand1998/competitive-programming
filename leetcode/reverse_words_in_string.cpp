@@ -1,40 +1,44 @@
 #include <iostream>
 #include <ctype.h>
-#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-string reverseWords(string s) {
-  vector<int> starts { };
-  vector<int> ends { };
-        
-  bool inside_word = 0;
-  // put the starts and ends of each word inside
-  for (int i = s.size()-1; i >= 0; --i) {
-    if ((i == 0) && !isspace(s[i])) {
-      starts.push_back(i);
-    } else if (isspace(s[i]) && inside_word) {
-      inside_word = 0;
-      starts.push_back(i+1);
-    } else if (!isspace(s[i]) && !inside_word) {
-      inside_word = 1;
-      ends.push_back(i);
-    }   
-  }
-
-  string sol = "";
-  for (int i = 0; i < static_cast<int>(starts.size()); ++i) {
-    cout << starts[i] << ' ' << ends[i] << '\n';
-    for (int j = starts[i]; j <= ends[i]; ++j) {
-      sol += s[j];
+class Solution {
+public:
+  void reverse_and_place(string& s, int begin, int end, int& recent)
+  {
+    reverse(s.begin()+begin, s.begin()+end+1);
+  
+    for (int i = end; i >= begin; --i) {
+      s[--recent] = s[i];
     }
-    if (i != static_cast<int>(starts.size()-1)) sol += ' ';
+    if (recent != 0) s[--recent] = ' ';
   }
-  return sol;
-}
-
-int main()
-{
-  string s = "a good   example";
-  cout << reverseWords(s);
-}
+    
+  string reverseWords(string s) {
+    if (s == "") return "";
+    int last_char = -1;
+    int recent = s.size();
+    
+    bool inside_word = 0;
+    // put the starts and ends of each word inside
+    for (int i = s.size()-1; i >= 0; --i) {
+      if (isspace(s[i]) && inside_word) {
+	inside_word = 0;
+	reverse_and_place(s, i+1, last_char, recent);
+      } else if (!isspace(s[i]) && !inside_word) {
+	inside_word = 1;
+	last_char = i;
+      }   
+          
+      if ((i == 0) && !isspace(s[i])) {
+	reverse_and_place(s, 0, last_char, recent);
+      }
+    }
+    if (last_char == -1) return "";
+    reverse(s.begin(), s.end());
+    s[s.size()-recent-1] == ' ' ? s.resize(s.size()-recent-1) : s.resize(s.size()-recent);
+    return s;
+  }
+};
