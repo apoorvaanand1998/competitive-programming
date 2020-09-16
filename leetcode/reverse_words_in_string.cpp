@@ -17,7 +17,6 @@ public:
   }
     
   string reverseWords(string s) {
-    if (s == "") return "";
     int last_char = -1;
     int recent = s.size();
     
